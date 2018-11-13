@@ -1,0 +1,2 @@
+synth: ../mda DX10.vst
+preset: 7
