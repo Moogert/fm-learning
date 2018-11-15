@@ -10,7 +10,7 @@ import os
 
 ## todo - put these settings in an ini file
 #CONST_DX_PARAM_COUNT = 147
-CONST_DX_PARAM_COUNT = 147
+CONST_DX_PARAM_COUNT = 21 # 21 params/oscillator
 CONST_DIR = "../../" # changed from "../"
 CONST_DX_VST = CONST_DIR + "Dexed.vst" # we're using DEXED!!
 #CONST_DX_VST = CONST_DIR + "mda DX10.vst"
@@ -348,8 +348,20 @@ def get_mrs_watson_param_string(params):
 
 # generate a list of random values between 0 and 1 of the specified length
 def get_random_params(length):
+
 	params = np.random.rand(length)
 	print(params)
+	"""
+	# this section is for ascertaining what does what
+	params[16] = 1
+	params[18] = 0 # coarse freq
+	return params
+	"""
+	for i in range(length):
+		params[i] = 0.5
+	#params[0] = 0.25 # quiet? YAY something changed
+	params[6] = 0.8  # modulate OP EG rate 1, in theory
+
 	return params
 
 
@@ -362,7 +374,7 @@ def get_files_in_dir(dir, filter = None):
 
 
 if __name__ == '__main__':
-	for i in range(0, 5):
+	for i in range(0, 1):
 		render_random_dx_sound("random.wav")
 
 
