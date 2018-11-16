@@ -10,7 +10,7 @@ import os
 
 ## todo - put these settings in an ini file
 #CONST_DX_PARAM_COUNT = 147
-CONST_DX_PARAM_COUNT = 21 # 21 params/oscillator
+CONST_DX_PARAM_COUNT = 136 # 21 params/oscillator
 CONST_DIR = "../../" # changed from "../"
 CONST_DX_VST = CONST_DIR + "Dexed.vst" # we're using DEXED!!
 #CONST_DX_VST = CONST_DIR + "mda DX10.vst"
@@ -349,8 +349,8 @@ def get_mrs_watson_param_string(params):
 # generate a list of random values between 0 and 1 of the specified length
 def get_random_params(length):
 
-	params = np.random.rand(length)
-	print(params)
+	p = np.random.rand(length)
+	print(p)
 	"""
 	# this section is for ascertaining what does what
 	params[16] = 1
@@ -358,11 +358,59 @@ def get_random_params(length):
 	return params
 	"""
 	for i in range(length):
-		params[i] = 0.5
-	#params[0] = 0.25 # quiet? YAY something changed
-	params[6] = 0.8  # modulate OP EG rate 1, in theory
+		p[i] = 1 # turn everything down by default
 
-	return params
+	# rates
+	oN = 6 # oscillator ->> FOR HUMANS
+	n = 7-oN # for array indexing
+
+	p[0*n] = 1 # attack
+	p[1*n] = 1 # hold
+	p[2*n] = 1 # decay
+	p[3*n] = 0 # release
+
+	# levels (ostensibly) - these are all to get constant dynamics
+	p[4*n] = 0 # level 1
+	p[5*n] = 0
+	p[6*n] = 0
+	p[7*n] = 0
+	# The above settings should yield
+	# a sound with constant dynamics, starting all at once with HIGH VOLUME
+	# ASSUMPTION: high values -> low synth values
+
+	p[16*n] = 1	# oscillator output level
+
+	oN = 5 # oscillator ->> FOR HUMANS
+	n = 7-oN # for array indexing
+
+
+
+	# turn every oscillator off except 5 and 6
+	# for algorithm 31:
+	# NOTE: this doesn't do what i think it should, there's
+	# clearly more than one oscillator running...
+
+	for i in range(1, 5):
+
+		p[0*i] = 1 # attack
+		p[1*i] = 1 # hold
+		p[2*i] = 1 # decay
+		p[3*i] = 0 # release
+
+		# levels (ostensibly) - these are all to get constant dynamics)
+		p[4*i] = 0 # level 1
+		p[5*i] = 0
+		p[6*i] = 0
+		p[7*i] = 0
+		p[16*i] = 1 # operator output level -> OFF
+
+
+
+
+
+	p[134] = 31 # set algorithm
+
+	return p
 
 
 def get_files_in_dir(dir, filter = None):
